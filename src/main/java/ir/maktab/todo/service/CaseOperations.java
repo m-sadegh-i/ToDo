@@ -8,6 +8,7 @@ import ir.maktab.todo.util.ApplicationContext;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CaseOperations {
@@ -67,8 +68,8 @@ public class CaseOperations {
         String subject;
         String status = String.valueOf(ActivityStatus.OPEN);
 
-        System.out.println("Please Enter The Subject of Your Activity :");
         ApplicationContext.getTextScanner().nextLine();
+        System.out.println("Please Enter The Subject of Your Activity :");
         subject = ApplicationContext.getTextScanner().nextLine();
 
         ApplicationContext.getMenu().showActivityStatusMenu();
@@ -91,7 +92,14 @@ public class CaseOperations {
         }
         Activity activeUserActivity = new Activity(subject, status,
                 Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()));
-        activeUser.getActivities().add(activeUserActivity);
+        try {
+            activeUser.getActivities().add(activeUserActivity);
+        } catch (NullPointerException e) {
+            ArrayList<Activity> userActivities = new ArrayList<>();
+            userActivities.add(activeUserActivity);
+            activeUser.setActivities(userActivities);
+        }
+
         ApplicationContext.getActivityRepositoryImpl().save(activeUserActivity);
     }
 
@@ -101,7 +109,12 @@ public class CaseOperations {
 
         List<Activity> userActivities = activeUser.getActivities();
 
-        ApplicationContext.getActivityServiceImpl().printUserActivities(userActivities);
+        try {
+            ApplicationContext.getActivityServiceImpl().printUserActivities(userActivities);
+        } catch (NullPointerException e) {
+            System.out.println("You Don't Add Any Activities Yet !");
+        }
+
 
         if (!userActivities.isEmpty()) {
             System.out.println("Please Enter Id Number of Activity :");
@@ -159,91 +172,94 @@ public class CaseOperations {
         int ascDesc = 0;
         List<Activity> activeUserActivities = activeUser.getActivities();
 
-        ApplicationContext.getMenu().showSortMenu();
-        int sortMenuCase = 0;
-        sortMenuCase = ApplicationContext.intFromScannerReturn(sortMenuCase);
-        switch (sortMenuCase) {
-            case 1:
+        if (!activeUserActivities.isEmpty()) {
+            ApplicationContext.getMenu().showSortMenu();
+            int sortMenuCase = 0;
+            sortMenuCase = ApplicationContext.intFromScannerReturn(sortMenuCase);
+            switch (sortMenuCase) {
+                case 1:
 
-                ApplicationContext.getMenu().showAscDescInSortMenu();
-                ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
+                    ApplicationContext.getMenu().showAscDescInSortMenu();
+                    ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
 
-                switch (ascDesc) {
+                    switch (ascDesc) {
 
-                    case 1:
-                        activeUserActivities.sort(new ActivityServiceImpl.SubjectComparator());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                        case 1:
+                            activeUserActivities.sort(new ActivityServiceImpl.SubjectComparator());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    case 2:
-                        activeUserActivities.sort(new ActivityServiceImpl.SubjectComparator().reversed());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                        case 2:
+                            activeUserActivities.sort(new ActivityServiceImpl.SubjectComparator().reversed());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    default:
-                        break;
-                }
-                break;
+                        default:
+                            break;
+                    }
+                    break;
 
-            case 2:
-                ApplicationContext.getMenu().showAscDescInSortMenu();
-                ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
-                switch (ascDesc) {
-                    case 1:
-                        activeUserActivities.sort(new ActivityServiceImpl.CreateDateComparator());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                case 2:
+                    ApplicationContext.getMenu().showAscDescInSortMenu();
+                    ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
+                    switch (ascDesc) {
+                        case 1:
+                            activeUserActivities.sort(new ActivityServiceImpl.CreateDateComparator());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    case 2:
-                        activeUserActivities.sort(new ActivityServiceImpl.CreateDateComparator().reversed());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                        case 2:
+                            activeUserActivities.sort(new ActivityServiceImpl.CreateDateComparator().reversed());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    default:
-                        break;
-                }
-                break;
+                        default:
+                            break;
+                    }
+                    break;
 
-            case 3:
-                ApplicationContext.getMenu().showAscDescInSortMenu();
-                ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
-                switch (ascDesc) {
-                    case 1:
-                        activeUserActivities.sort(new ActivityServiceImpl.StatusComparator());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                case 3:
+                    ApplicationContext.getMenu().showAscDescInSortMenu();
+                    ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
+                    switch (ascDesc) {
+                        case 1:
+                            activeUserActivities.sort(new ActivityServiceImpl.StatusComparator());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    case 2:
-                        activeUserActivities.sort(new ActivityServiceImpl.StatusComparator().reversed());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                        case 2:
+                            activeUserActivities.sort(new ActivityServiceImpl.StatusComparator().reversed());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    default:
-                        break;
-                }
-                break;
+                        default:
+                            break;
+                    }
+                    break;
 
-            case 4:
-                ApplicationContext.getMenu().showAscDescInSortMenu();
-                ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
-                switch (ascDesc) {
-                    case 1:
-                        activeUserActivities.sort(new ActivityServiceImpl.UpdateDateComparator());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
+                case 4:
+                    ApplicationContext.getMenu().showAscDescInSortMenu();
+                    ascDesc = ApplicationContext.intFromScannerReturn(ascDesc);
+                    switch (ascDesc) {
+                        case 1:
+                            activeUserActivities.sort(new ActivityServiceImpl.UpdateDateComparator());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
 
-                    case 2:
-                        activeUserActivities.sort(new ActivityServiceImpl.UpdateDateComparator().reversed());
-                        ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
-                        break;
-                    default:
-                        break;
-                }
-                break;
+                        case 2:
+                            activeUserActivities.sort(new ActivityServiceImpl.UpdateDateComparator().reversed());
+                            ApplicationContext.getActivityServiceImpl().printUserActivities(activeUserActivities);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+        } else {
+            System.out.println("You Don't Add Any Activities Yet !");
         }
-
     }
 }

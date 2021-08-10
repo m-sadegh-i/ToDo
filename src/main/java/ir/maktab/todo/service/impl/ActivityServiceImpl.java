@@ -56,11 +56,12 @@ public class ActivityServiceImpl extends BaseServiceImpl<Activity, Long, Activit
         }
     }
 
-    public void printUserActivities(List<Activity> activities){
+    public void printUserActivities(List<Activity> activities) {
         for (Activity userActivity : activities) {
             System.out.println("<><><><><><><><><><><><><><><><><><><><><><><><><>");
             System.out.println("*** Activity ID : " + userActivity.getId());
             System.out.println("*** Activity Subject : " + userActivity.getSubject());
+            System.out.println("*** Activity Status : " + userActivity.getStatus());
             System.out.println("*** Activity Create Date : " + userActivity.getCreatedDate());
             System.out.println("*** Activity Update Date : " + userActivity.getUpdateDate());
             System.out.println("==================================================");
